@@ -1,9 +1,10 @@
-import { Shield, Brain, Globe, Lock, Heart, Zap } from 'lucide-react'
+import { Shield, Brain, Globe, Lock, Heart, Zap, ArrowRight } from 'lucide-react'
 import { Container } from '@/components/common/Container'
 import { Reveal } from '@/components/common/Reveal'
 import { SectionHeading } from '@/components/common/SectionHeading'
 import { SolutionsGrid } from '@/components/sections/home/SolutionsGrid'
 import { CTASection } from '@/components/sections/CTASection'
+import { Button } from '@/components/buttons/Button'
 import { usePageMeta } from '@/hooks/usePageMeta'
 
 const CATEGORIES = [
@@ -44,14 +45,15 @@ export default function Solutions() {
   return (
     <>
       {/* Hero */}
-      <section className="relative min-h-[70vh] overflow-hidden bg-[#0a0a1a]">
+      <section className="relative overflow-hidden bg-[#0a0a1a] pt-28 sm:pt-32 lg:pt-40 pb-16 sm:pb-20 lg:pb-24">
         <div className="pointer-events-none absolute inset-0" aria-hidden="true">
           <div className="absolute -left-[20%] top-[10%] h-[500px] w-[500px] rounded-full bg-primary-600/20 blur-[120px] animate-pulse-glow" />
           <div className="absolute -right-[10%] top-[30%] h-[400px] w-[400px] rounded-full bg-accent-500/15 blur-[100px] animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
+          <div className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-gradient opacity-[0.04] blur-3xl" />
         </div>
         <div className="pointer-events-none absolute inset-0 bg-grid-dark opacity-40 [mask-image:radial-gradient(ellipse_70%_70%_at_50%_30%,black_30%,transparent_100%)]" aria-hidden="true" />
 
-        <Container className="relative flex min-h-[70vh] items-center pt-24 lg:pt-28">
+        <Container className="relative">
           <Reveal variant="up" once className="mx-auto max-w-3xl text-center">
             <p className="text-xs font-semibold uppercase tracking-widest text-accent-300">Solutions</p>
             <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
@@ -62,6 +64,12 @@ export default function Solutions() {
               Explore the platforms, initiatives, and technology solutions developed through
               the MetaCheck Foundation ecosystem.
             </p>
+            <div className="mt-10">
+              <Button to="/contact" size="lg" className="group bg-gradient-to-r from-primary-600 to-primary-500 shadow-glow hover:shadow-glow-lg">
+                Talk to an Expert
+                <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true" />
+              </Button>
+            </div>
           </Reveal>
         </Container>
       </section>
@@ -104,7 +112,7 @@ export default function Solutions() {
             description="Each solution is powerful alone — together they form a complete trust program with shared audit trails and analytics."
           />
         </Container>
-        <SolutionsGrid detailed />
+        <SolutionsGrid />
       </div>
 
       {/* Technology Stack */}

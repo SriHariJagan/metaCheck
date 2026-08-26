@@ -40,14 +40,14 @@ export default function Careers() {
   return (
     <>
       {/* Hero */}
-      <section className="relative min-h-[70vh] overflow-hidden bg-[#0a0a1a]">
+      <section className="relative overflow-hidden bg-[#0a0a1a] pt-28 sm:pt-32 lg:pt-40 pb-16 sm:pb-20 lg:pb-24">
         <div className="pointer-events-none absolute inset-0" aria-hidden="true">
           <div className="absolute -left-[20%] top-[10%] h-[500px] w-[500px] rounded-full bg-primary-600/20 blur-[120px] animate-pulse-glow" />
           <div className="absolute -right-[10%] top-[30%] h-[400px] w-[400px] rounded-full bg-accent-500/15 blur-[100px] animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
         </div>
         <div className="pointer-events-none absolute inset-0 bg-grid-dark opacity-40 [mask-image:radial-gradient(ellipse_70%_70%_at_50%_30%,black_30%,transparent_100%)]" aria-hidden="true" />
 
-        <Container className="relative flex min-h-[70vh] items-center pt-24 lg:pt-28">
+        <Container className="relative">
           <Reveal variant="up" once className="mx-auto max-w-3xl text-center">
             <p className="text-xs font-semibold uppercase tracking-widest text-accent-300">Careers</p>
             <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
@@ -68,7 +68,7 @@ export default function Careers() {
       </section>
 
       {/* Stats */}
-      <section className="relative overflow-hidden bg-white py-16">
+      <section className="relative overflow-hidden bg-white py-16 scroll-mt-20">
         <Container>
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
             {CAREER_STATS.map((stat, index) => (

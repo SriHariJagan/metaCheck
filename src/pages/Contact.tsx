@@ -1,138 +1,611 @@
-import { useState, type FormEvent } from 'react'
-import { Mail, MapPin, Send, CheckCircle2, Loader2 } from 'lucide-react'
-import { Container } from '@/components/common/Container'
-import { Reveal } from '@/components/common/Reveal'
-import { Input } from '@/components/forms/Input'
-import { Textarea } from '@/components/forms/Textarea'
-import { contactService } from '@/services/contactService'
-import { usePageMeta } from '@/hooks/usePageMeta'
+import { useState, useCallback } from "react";
+import { Reveal } from "@/components/common/Reveal";
+import { SectionHeading } from "@/components/common/SectionHeading";
+import { Button } from "@/components/buttons/Button";
+import { Input } from "@/components/forms/Input";
+import { Select } from "@/components/forms/Select";
+import { Textarea } from "@/components/forms/Textarea";
+import { contactService } from "@/services/contactService";
+import {
+  Mail,
+  MapPin,
+  Phone,
+  Loader2,
+  CheckCircle2,
+  LifeBuoy,
+  Handshake,
+  UserPlus,
+  Clock,
+  ArrowRight,
+  Globe,
+  Shield,
+  Zap,
+} from "lucide-react";
 
-const CONTACT_INFO = [
-  { icon: Mail, label: 'General Enquiries', value: 'hello@metacheck.io', description: 'For general questions and information.' },
-  { icon: Mail, label: 'Partnerships', value: 'partners@metacheck.io', description: 'Explore collaboration opportunities.' },
-  { icon: Mail, label: 'Careers', value: 'careers@metacheck.io', description: 'Job applications and talent inquiries.' },
-  { icon: MapPin, label: 'Location', value: 'Global \u00b7 Remote-first', description: 'We operate across multiple regions.' },
-]
+const CONTACT_REASONS = [
+  { value: "demo", label: "Request a live demo" },
+  { value: "pricing", label: "Pricing & plans" },
+  { value: "enterprise", label: "Enterprise / custom deployment" },
+  { value: "partnership", label: "Partnership inquiry" },
+  { value: "press", label: "Press & media" },
+  { value: "other", label: "Other" },
+];
 
-interface FormState { name: string; email: string; phone: string; company: string; subject: string; message: string }
-const EMPTY: FormState = { name: '', email: '', phone: '', company: '', subject: '', message: '' }
-type Errors = Partial<Record<keyof FormState, string>>
+const COMPANY_SIZES = [
+  { value: "1-10", label: "1-10 employees" },
+  { value: "11-50", label: "11-50 employees" },
+  { value: "51-200", label: "51-200 employees" },
+  { value: "201-500", label: "201-500 employees" },
+  { value: "501-1000", label: "501-1000 employees" },
+  { value: "1000+", label: "1000+ employees" },
+];
 
-function validate(form: FormState): Errors {
-  const errors: Errors = {}
-  if (!form.name.trim()) errors.name = 'Please enter your full name.'
-  if (!form.email.trim()) errors.email = 'An email address is required.'
-  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errors.email = 'That email address looks incomplete.'
-  if (!form.subject.trim()) errors.subject = 'Please select or enter a subject.'
-  if (!form.message.trim()) errors.message = 'Please enter your message.'
-  return errors
+const VERIFICATION_VOLUMES = [
+  { value: "under-1k", label: "Under 1k checks/month" },
+  { value: "1k-10k", label: "1k-10k checks/month" },
+  { value: "10k-100k", label: "10k-100k checks/month" },
+  { value: "100k+", label: "100k+ checks/month" },
+  { value: "not-sure", label: "Not sure yet" },
+];
+
+const channels = [
+  {
+    icon: LifeBuoy,
+    title: "Support",
+    desc: "Account & verification help",
+    gradient: "from-cyan-500 to-blue-500",
+    bg: "bg-cyan-50",
+    text: "text-cyan-600",
+    value: "support@metacheck.metadev.io",
+  },
+  {
+    icon: Handshake,
+    title: "Partnerships",
+    desc: "Integrations & collaborations",
+    gradient: "from-violet-500 to-purple-500",
+    bg: "bg-violet-50",
+    text: "text-violet-600",
+    value: "partners@metacheck.metadev.io",
+  },
+  {
+    icon: UserPlus,
+    title: "Careers",
+    desc: "Questions about open roles",
+    gradient: "from-pink-500 to-rose-500",
+    bg: "bg-pink-50",
+    text: "text-pink-600",
+    value: "careers@metacheck.metadev.io",
+  },
+  {
+    icon: Phone,
+    title: "General",
+    desc: "Main contact line",
+    gradient: "from-amber-500 to-orange-500",
+    bg: "bg-amber-50",
+    text: "text-amber-600",
+    value: "+91 95595 59143",
+  },
+];
+
+const METADEV_CONTACT_EMAILS = [
+  "info@metadev.in",
+  "contact@metadev.in",
+  "support@metadev.in",
+  "business@metadev.in",
+  "tech@metadev.in",
+  "partnership@metadev.in",
+];
+
+const METADEV_OFFICES = [
+  "Hyderabad, Telangana (HQ)",
+  "Amaravathi, Andhra Pradesh",
+  "Bangalore, Karnataka",
+  "Bengaluru, Karnataka (HQ)",
+];
+
+const METADEV_PHONES = ["+91 95595 59143"];
+
+const METADEV_HOURS = [
+  "Monday – Friday: 9AM – 6PM",
+  "Saturday: 10AM – 4PM",
+  "Sunday: Closed",
+];
+
+interface FormData {
+  name: string;
+  email: string;
+  company: string;
+  reason: string;
+  companySize: string;
+  adSpend: string;
+  message: string;
 }
 
-export default function Contact() {
-  usePageMeta('Contact | MetaCheck Foundation', 'Whether you want to collaborate, explore our solutions, join our team, or simply learn more, we would love to hear from you.')
-  const [form, setForm] = useState<FormState>(EMPTY)
-  const [errors, setErrors] = useState<Errors>({})
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
-  const update = (field: keyof FormState) => (value: string) => { setForm((prev) => ({ ...prev, [field]: value })); setErrors((prev) => ({ ...prev, [field]: undefined })) }
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault()
-    const nextErrors = validate(form)
-    setErrors(nextErrors)
-    if (Object.keys(nextErrors).length > 0) return
-    setStatus('submitting')
-    try {
-      const result = await contactService.submit(form)
-      if (result.ok) { setStatus('success'); setForm(EMPTY) } else { setStatus('error') }
-    } catch { setStatus('error') }
-  }
+interface FormErrors {
+  name?: string;
+  email?: string;
+  company?: string;
+  reason?: string;
+  message?: string;
+}
+
+function ContactHero() {
   return (
-    <>
-      <section className="relative min-h-[70vh] overflow-hidden bg-[#0a0a1a]">
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-          <div className="absolute -left-[20%] top-[10%] h-[500px] w-[500px] rounded-full bg-primary-600/20 blur-[120px] animate-pulse-glow" />
-          <div className="absolute -right-[10%] top-[30%] h-[400px] w-[400px] rounded-full bg-accent-500/15 blur-[100px] animate-pulse-glow" style={{ animationDelay: "1.5s" }} />
-        </div>
-        <div className="pointer-events-none absolute inset-0 bg-grid-dark opacity-40" aria-hidden="true" />
-        <Container className="relative flex min-h-[70vh] items-center pt-24 lg:pt-28">
-          <Reveal variant="up" once className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-semibold uppercase tracking-widest text-accent-300">Contact</p>
-            <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">Let&apos;s start a <span className="text-gradient-dark">conversation</span></h1>
-            <p className="mt-6 text-lg leading-relaxed text-slate-400 sm:text-xl">Whether you want to collaborate, explore our solutions, join our team, or simply learn more about MetaCheck Foundation, we&apos;d love to hear from you.</p>
+    <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 pt-24 sm:pt-28 lg:pt-36 pb-16 sm:pb-20">
+      {/* Background elements */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -left-40 top-0 h-[500px] w-[500px] rounded-full bg-blue-500/10 blur-[120px]" />
+        <div className="absolute -right-40 top-1/2 h-[400px] w-[400px] rounded-full bg-violet-500/10 blur-[100px]" />
+        <div className="absolute left-1/2 bottom-0 h-[300px] w-[300px] -translate-x-1/2 rounded-full bg-cyan-500/10 blur-[80px]" />
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px)`,
+            backgroundSize: "60px 60px",
+          }}
+        />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="grid items-center gap-12 lg:grid-cols-2">
+          {/* Left content */}
+          <Reveal variant="left">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inset-0 rounded-full bg-green-400 opacity-75 animate-ping" />
+                <span className="relative h-full w-full rounded-full bg-green-400" />
+              </span>
+              <span className="text-xs font-semibold uppercase tracking-widest text-slate-300">
+                Available 24/7
+              </span>
+            </div>
+
+            <h1 className="mt-8 text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+              Let's build
+              <br />
+              <span className="bg-gradient-to-r from-blue-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
+                trust together.
+              </span>
+            </h1>
+
+            <p className="mt-6 max-w-lg text-base leading-7 text-slate-400 sm:text-lg">
+              Whether you need background verification at scale, enterprise
+              compliance, or just have questions — our team is here to help.
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-4">
+              {[
+                { icon: Shield, label: "SOC 2 Certified" },
+                { icon: Globe, label: "200+ Countries" },
+                { icon: Zap, label: "< 4hr Response" },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2"
+                >
+                  <item.icon className="h-4 w-4 text-primary-400" />
+                  <span className="text-xs font-medium text-slate-300">
+                    {item.label}
+                  </span>
+                </div>
+              ))}
+            </div>
           </Reveal>
-        </Container>
-      </section>
-      <section className="relative overflow-hidden bg-white py-16">
-        <Container>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {CONTACT_INFO.map(({ icon: Icon, label, value, description }, index) => (
-              <Reveal key={label} variant="up" delay={index * 100}>
-                <div className="group h-full rounded-2xl border border-slate-200 bg-slate-50/50 p-6 transition-all duration-500 hover:border-primary-200 hover:bg-white hover:shadow-glow">
-                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary-50 text-primary-600 transition-all duration-300 group-hover:bg-primary-600 group-hover:text-white"><Icon className="h-5 w-5" aria-hidden="true" /></span>
-                  <h3 className="mt-4 font-semibold text-slate-900">{label}</h3>
-                  <p className="mt-1 text-sm font-medium text-primary-600">{value}</p>
-                  <p className="mt-1 text-xs text-slate-500">{description}</p>
+
+          {/* Right visual */}
+          <Reveal variant="right" delay={200}>
+            <div className="relative">
+              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-500/20 via-violet-500/10 to-cyan-500/20 blur-3xl" />
+              <div className="relative rounded-3xl border border-white/10 bg-white/[0.04] p-8 backdrop-blur-xl">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+                      Response Time
+                    </p>
+                    <p className="mt-1 text-lg font-semibold text-white">
+                      Average under 4 hours
+                    </p>
+                  </div>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-400/10">
+                    <Clock className="h-5 w-5 text-green-400" />
+                  </div>
                 </div>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </section>
-      <section className="relative overflow-hidden bg-slate-50 py-24 sm:py-32">
-        <div className="pointer-events-none absolute inset-0 bg-dot opacity-50" aria-hidden="true" />
-        <Container className="relative">
-          <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
-            <Reveal variant="left">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-primary-600">Get in Touch</p>
-                <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Send us a message</h2>
-                <p className="mt-4 text-lg text-slate-500">Fill out the form and our team will get back to you within 24 hours.</p>
+
+                <div className="mt-8 grid grid-cols-2 gap-4">
+                  {[
+                    { label: "Demo requests", value: "< 4 hrs", gradient: "from-blue-500 to-indigo-500" },
+                    { label: "Pricing", value: "< 8 hrs", gradient: "from-cyan-500 to-teal-500" },
+                    { label: "Enterprise", value: "< 24 hrs", gradient: "from-violet-500 to-purple-500" },
+                    { label: "Support", value: "< 1 hr", gradient: "from-pink-500 to-rose-500" },
+                  ].map((item) => (
+                    <div
+                      key={item.label}
+                      className="rounded-xl border border-white/10 bg-white/[0.03] p-4"
+                    >
+                      <div className={`h-1 w-8 rounded-full bg-gradient-to-r ${item.gradient} mb-3`} />
+                      <p className="text-xs text-slate-400">{item.label}</p>
+                      <p className="mt-1 text-sm font-bold text-white">{item.value}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-6 flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-green-400 to-emerald-500">
+                    <CheckCircle2 className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-white">
+                      99.9% uptime guarantee
+                    </p>
+                    <p className="text-xs text-slate-400">
+                      Enterprise-grade reliability
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="mt-10 space-y-6">
-                <div className="rounded-2xl border border-primary-100 bg-gradient-to-br from-primary-50 via-white to-accent-50 p-6">
-                  <p className="text-sm font-semibold text-slate-900">Response time</p>
-                  <p className="mt-1 text-sm text-slate-500">We aim to respond within 24 hours on business days.</p>
-                </div>
-                <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                  <p className="text-sm font-semibold text-slate-900">Partnership inquiries</p>
-                  <p className="mt-1 text-sm text-slate-500">For partnership inquiries, please email <span className="font-medium text-primary-600">partners@metacheck.io</span> directly.</p>
-                </div>
+            </div>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ChannelsSection() {
+  return (
+    <section className="relative bg-white py-12 sm:py-16">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <Reveal variant="up">
+          <div className="-mt-10 relative z-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {channels.map((ch) => {
+                const Icon = ch.icon;
+                return (
+                  <div
+                    key={ch.title}
+                    className="group relative overflow-hidden rounded-2xl border border-slate-100 bg-white p-5 transition-all duration-300 hover:border-transparent hover:shadow-xl"
+                  >
+                    <div
+                      className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${ch.gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-100`}
+                    />
+                    <div className="flex items-start gap-4">
+                      <div
+                        className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${ch.gradient} text-white shadow-lg transition-transform duration-300 group-hover:scale-110`}
+                      >
+                        <Icon className="h-5 w-5" strokeWidth={1.5} />
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="font-bold text-slate-900 text-sm">
+                          {ch.title}
+                        </h3>
+                        <p className="text-xs text-slate-400 mt-0.5">
+                          {ch.desc}
+                        </p>
+                        <p
+                          className="text-xs font-semibold mt-2 truncate"
+                          style={{ color: `var(--tw-gradient-stops)` }}
+                        >
+                          <span className={`bg-gradient-to-r ${ch.gradient} bg-clip-text text-transparent`}>
+                            {ch.value}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+function ContactFormSection() {
+  const [formData, setFormData] = useState<FormData>({
+    name: "",
+    email: "",
+    company: "",
+    reason: "demo",
+    companySize: "",
+    adSpend: "not-sure",
+    message: "",
+  });
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<
+    "idle" | "success" | "error"
+  >("idle");
+
+  const validateForm = useCallback((): boolean => {
+    const newErrors: FormErrors = {};
+    if (!formData.name.trim()) newErrors.name = "Full name is required";
+    if (!formData.email.trim()) newErrors.email = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
+      newErrors.email = "Invalid email format";
+    if (!formData.company.trim())
+      newErrors.company = "Company name is required";
+    if (!formData.reason) newErrors.reason = "Please select a reason";
+    if (!formData.message.trim()) newErrors.message = "Message is required";
+    else if (formData.message.trim().length < 20)
+      newErrors.message = "Please provide more detail (at least 20 characters)";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }, [formData]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+    setIsSubmitting(true);
+    try {
+      await contactService.submit({
+        name: formData.name,
+        email: formData.email,
+        company: formData.company,
+        reason: formData.reason,
+        companySize: formData.companySize,
+        adSpend: formData.adSpend,
+        subject: formData.reason,
+        message: formData.message,
+      });
+      setSubmitStatus("success");
+      setFormData({
+        name: "",
+        email: "",
+        company: "",
+        reason: "demo",
+        companySize: "",
+        adSpend: "not-sure",
+        message: "",
+      });
+    } catch {
+      setSubmitStatus("error");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleChange = (name: keyof FormData, value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name as keyof FormErrors]) {
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  return (
+    <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 py-16 sm:py-20">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -right-40 top-0 h-[400px] w-[400px] rounded-full bg-blue-100/50 blur-[100px]" />
+        <div className="absolute -left-40 bottom-0 h-[300px] w-[300px] rounded-full bg-violet-100/50 blur-[80px]" />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="grid lg:grid-cols-[1fr_1.2fr] gap-10 lg:gap-14">
+          {/* Left info */}
+          <div>
+            <Reveal variant="up">
+              <SectionHeading
+                eyebrow="Contact us"
+                title="Start the conversation"
+                description="Fill out the form and we'll route you to the right person. Most inquiries get a response within 4 business hours."
+                align="left"
+              />
+            </Reveal>
+
+            <Reveal variant="up" delay={100}>
+              <div className="mt-10 space-y-4">
+                {[
+                  {
+                    icon: Mail,
+                    gradient: "from-blue-500 to-indigo-500",
+                    title: "Email",
+                    lines: METADEV_CONTACT_EMAILS,
+                  },
+                  {
+                    icon: MapPin,
+                    gradient: "from-emerald-500 to-teal-500",
+                    title: "Offices",
+                    lines: METADEV_OFFICES,
+                  },
+                  {
+                    icon: Phone,
+                    gradient: "from-violet-500 to-purple-500",
+                    title: "Phone",
+                    lines: METADEV_PHONES,
+                  },
+                  {
+                    icon: Clock,
+                    gradient: "from-amber-500 to-orange-500",
+                    title: "Working Hours",
+                    lines: METADEV_HOURS,
+                  },
+                ].map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <div
+                      key={item.title}
+                      className="group flex items-start gap-4 rounded-xl border border-slate-100 bg-white p-4 transition-all duration-200 hover:border-slate-200 hover:shadow-md"
+                    >
+                      <span
+                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${item.gradient} text-white shadow-md transition-transform duration-200 group-hover:scale-110`}
+                      >
+                        <Icon className="h-4 w-4" strokeWidth={1.5} />
+                      </span>
+                      <div>
+                        <h3 className="font-bold text-slate-900 text-sm">
+                          {item.title}
+                        </h3>
+                        {item.lines.map((line) => (
+                          <p
+                            key={line}
+                            className="text-sm text-slate-500 mt-0.5"
+                          >
+                            {line}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </Reveal>
-            <Reveal variant="right" delay={120}>
-              {status === 'success' ? (
-                <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-12 text-center">
-                  <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600"><CheckCircle2 className="h-8 w-8" aria-hidden="true" /></span>
-                  <h3 className="mt-5 text-xl font-bold text-slate-900">Message sent</h3>
-                  <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-slate-600">Thank you. Your message has been received. Our team will get back to you shortly.</p>
-                  <button type="button" onClick={() => setStatus('idle')} className="mt-6 text-sm font-semibold text-primary-700 hover:text-primary-600">Send another message</button>
+          </div>
+
+          {/* Form */}
+          <div>
+            <Reveal variant="up" delay={150}>
+              {submitStatus === "success" ? (
+                <div
+                  className="rounded-2xl border border-slate-100 bg-white p-8 sm:p-12 text-center shadow-lg"
+                  role="status"
+                >
+                  <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-green-400 to-emerald-500 shadow-lg shadow-green-500/25 mb-6">
+                    <CheckCircle2 className="h-8 w-8 text-white" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-slate-900">
+                    Message sent!
+                  </h2>
+                  <p className="mt-3 text-slate-500 max-w-md mx-auto">
+                    Thanks for reaching out. Our team will review and get back
+                    to you within our committed response time.
+                  </p>
+                  <Button
+                    variant="primary"
+                    className="mt-8"
+                    onClick={() => setSubmitStatus("idle")}
+                  >
+                    Send another message
+                  </Button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} noValidate className="rounded-2xl border border-slate-200 bg-white p-8 shadow-card">
-                  <div className="space-y-5">
-                    <div className="grid gap-5 sm:grid-cols-2">
-                      <Input label="Full Name" required name="name" autoComplete="name" placeholder="Your name" value={form.name} error={errors.name} onChange={(e) => update('name')(e.target.value)} />
-                      <Input label="Work Email" required name="email" type="email" autoComplete="email" placeholder="you@company.com" value={form.email} error={errors.email} onChange={(e) => update('email')(e.target.value)} />
-                    </div>
-                    <div className="grid gap-5 sm:grid-cols-2">
-                      <Input label="Phone" name="phone" type="tel" autoComplete="tel" placeholder="+1 (555) 000-0000" value={form.phone} onChange={(e) => update('phone')(e.target.value)} hint="Optional" />
-                      <Input label="Organization" name="company" autoComplete="organization" placeholder="Company name" value={form.company} onChange={(e) => update('company')(e.target.value)} hint="Optional" />
-                    </div>
-                    <Input label="Subject" required name="subject" placeholder="How can we help?" value={form.subject} error={errors.subject} onChange={(e) => update('subject')(e.target.value)} />
-                    <Textarea label="Message" required name="message" rows={5} placeholder="Tell us about your project, question, or idea..." value={form.message} error={errors.message} onChange={(e) => update('message')(e.target.value)} />
+                <form
+                  onSubmit={handleSubmit}
+                  noValidate
+                  className="rounded-2xl border border-slate-100 bg-white p-6 sm:p-8 shadow-lg"
+                >
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mb-4">
+                    <Input
+                      label="Full name"
+                      name="name"
+                      value={formData.name}
+                      onChange={(e) => handleChange("name", e.target.value)}
+                      error={errors.name}
+                      required
+                      placeholder="Priya Sharma"
+                      autoComplete="name"
+                    />
+                    <Input
+                      label="Work email"
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={(e) => handleChange("email", e.target.value)}
+                      error={errors.email}
+                      required
+                      placeholder="priya@company.com"
+                      autoComplete="email"
+                    />
                   </div>
-                  {status === 'error' && <p role="alert" className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">Something went wrong sending your message. Please try again.</p>}
-                  <div className="mt-6 flex items-center justify-between">
-                    <p className="hidden text-xs text-slate-400 sm:block">Frontend demo — no data leaves your browser.</p>
-                    <button type="submit" disabled={status === 'submitting'} className="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-primary-500 hover:shadow-md disabled:pointer-events-none disabled:opacity-50">
-                      {status === 'submitting' ? (<><Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />Sending...</>) : (<>Send Message<Send className="h-4 w-4" aria-hidden="true" /></>)}
-                    </button>
+                  <Input
+                    label="Company"
+                    name="company"
+                    value={formData.company}
+                    onChange={(e) => handleChange("company", e.target.value)}
+                    error={errors.company}
+                    required
+                    placeholder="Lumenkart"
+                    autoComplete="organization"
+                    className="mb-4"
+                  />
+                  <Select
+                    label="How can we help?"
+                    name="reason"
+                    value={formData.reason}
+                    onChange={(e) => handleChange("reason", e.target.value)}
+                    options={CONTACT_REASONS}
+                    error={errors.reason}
+                    required
+                    className="mb-4"
+                  />
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mb-4">
+                    <Select
+                      label="Company size"
+                      name="companySize"
+                      value={formData.companySize}
+                      onChange={(e) =>
+                        handleChange("companySize", e.target.value)
+                      }
+                      options={COMPANY_SIZES}
+                      placeholderOption="Select company size"
+                    />
+                    <Select
+                      label="Monthly verification volume"
+                      name="adSpend"
+                      value={formData.adSpend}
+                      onChange={(e) => handleChange("adSpend", e.target.value)}
+                      options={VERIFICATION_VOLUMES}
+                      placeholderOption="Select verification volume"
+                    />
                   </div>
+                  <Textarea
+                    label="Tell us more"
+                    name="message"
+                    value={formData.message}
+                    onChange={(e) => handleChange("message", e.target.value)}
+                    error={errors.message}
+                    required
+                    rows={4}
+                    placeholder="What challenges are you facing? What outcomes are you looking for?"
+                    className="mb-6"
+                  />
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    className="w-full"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2
+                          className="h-4 w-4 animate-spin mr-2"
+                          aria-hidden="true"
+                        />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        Send message
+                        <ArrowRight className="h-4 w-4 ml-2" aria-hidden="true" />
+                      </>
+                    )}
+                  </Button>
+                  {submitStatus === "error" && (
+                    <p
+                      className="mt-4 text-center text-sm text-red-500"
+                      role="alert"
+                    >
+                      Something went wrong. Please try again or email
+                      hello@metacheck.metadev.io directly.
+                    </p>
+                  )}
                 </form>
               )}
             </Reveal>
           </div>
-        </Container>
-      </section>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
+export default function Contact() {
+  return (
+    <>
+      <ContactHero />
+      <ChannelsSection />
+      <ContactFormSection />
     </>
-  )
+  );
 }

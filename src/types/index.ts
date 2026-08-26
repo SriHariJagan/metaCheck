@@ -61,6 +61,9 @@ export interface ContactPayload {
   name: string
   email: string
   company?: string
+  reason?: string
+  companySize?: string
+  adSpend?: string
   phone?: string
   subject: string
   message: string
