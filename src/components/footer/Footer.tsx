@@ -11,6 +11,26 @@ import { cn } from "@/utils/cn";
 import styles from "./Footer.module.css";
 import type { ReactElement } from "react";
 
+import metaHealth from "@/assets/images/ourProducts/metaHealth.png";
+import metaEdu from "@/assets/images/ourProducts/metaEdu.png";
+import metaEduDark from "@/assets/images/ourProducts/metaedu-dark.png";
+import metaGreen from "@/assets/images/ourProducts/metaGreen.png";
+import metaGreenDark from "@/assets/images/ourProducts/metagreen-dark.png";
+import metaFlow from "@/assets/images/ourProducts/metaFlow.png";
+import metaHire from "@/assets/images/ourProducts/metaHire.png";
+import metaHireDark from "@/assets/images/ourProducts/metahire-dark.png";
+import metaCheck from "@/assets/images/ourProducts/metaCheck.png";
+import metaCheckDark from "@/assets/images/ourProducts/metacheck-dark.png";
+import metaAds from "@/assets/images/ourProducts/metaAds.png";
+import metaAdsDark from "@/assets/images/ourProducts/metaAds-dark.png";
+import metaNav from "@/assets/images/ourProducts/MetaNav.png";
+import metaLedger from "@/assets/images/ourProducts/MetaLedger.png";
+import metaLedgerDark from "@/assets/images/ourProducts/MetaLedger-dark.png";
+import metaCard from "@/assets/images/ourProducts/metaCard.png";
+import metaCardDark from "@/assets/images/ourProducts/metaCard_dark.png";
+import metaIm from "@/assets/images/ourProducts/metaIm.png";
+import metaImDark from "@/assets/images/ourProducts/metaIm-dark.png";
+
 /* ==================================================================== */
 /* Brand icons — inline SVGs (lucide-react no longer ships brand marks) */
 /* ==================================================================== */
@@ -108,6 +128,8 @@ interface FooterLink {
   href: string;
   disabled?: boolean;
   external?: boolean;
+  logo?: string;
+  logoDark?: string;
 }
 
 interface FooterSection {
@@ -119,17 +141,17 @@ const FOOTER_SECTIONS: FooterSection[] = [
   {
     heading: "Products",
     links: [
-      { label: "MetaHealth", href: "https://metahealth.metadev.io", external: true },
-      { label: "MetaEdu", href: "https://metaedu.metadev.io", external: true },
-      { label: "MetaGreen", href: "https://metagreen.metadev.io", external: true },
-      { label: "MetaFlow", href: "https://metaflow.metadev.io", external: true },
-      { label: "MetaHire", href: "https://metahire.metadev.io", external: true },
-      { label: "MetaCheck", href: "/", external: false },
-      { label: "MetaNav", href: "https://metanav.metadev.io", external: true },
-      { label: "MetaLedger", href: "https://metaledger.metadev.io", external: true },
-      { label: "MetaCard", href: "https://metacard.metadev.io", external: true },
-      { label: "MetaIM", href: "https://metaim.metadev.io", external: true },
-      { label: "MetaAdds", href: "https://metaadds.metadev.io", external: true },
+      { label: "MetaHealth", href: "https://metahealth.metadev.io", external: true, logo: metaHealth, logoDark: metaHealth },
+      { label: "MetaEdu", href: "https://metaedu.metadev.io", external: true, logo: metaEdu, logoDark: metaEduDark },
+      { label: "MetaGreen", href: "https://metagreen.metadev.io", external: true, logo: metaGreen, logoDark: metaGreenDark },
+      { label: "MetaFlow", href: "https://metaflow.metadev.io", external: true, logo: metaFlow, logoDark: metaFlow },
+      { label: "MetaHire", href: "https://metahire.metadev.io", external: true, logo: metaHire, logoDark: metaHireDark },
+      { label: "MetaCheck", href: "/", external: false, logo: metaCheck, logoDark: metaCheckDark },
+      { label: "MetaNav", href: "https://metanav.metadev.io", external: true, logo: metaNav, logoDark: metaNav },
+      { label: "MetaLedger", href: "https://metaledger.metadev.io", external: true, logo: metaLedger, logoDark: metaLedgerDark },
+      { label: "MetaCard", href: "https://metacard.metadev.io", external: true, logo: metaCard, logoDark: metaCardDark },
+      { label: "MetaIM", href: "https://metaim.metadev.io", external: true, logo: metaIm, logoDark: metaImDark },
+      { label: "MetaAdds", href: "https://metaadds.metadev.io", external: true, logo: metaAds, logoDark: metaAdsDark },
     ],
   },
   {
@@ -185,6 +207,55 @@ function FooterLinkSection({ section }: { section: FooterSection }) {
                 {link.label}
                 <span className={styles.soonDot} aria-hidden="true" />
               </span>
+            ) : link.logo ? (
+              link.external ? (
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.productItem}
+                >
+                  <span className={styles.productLogoWrap}>
+                    <img
+                      src={link.logo}
+                      alt=""
+                      className={`${styles.productLogo} ${styles.productLogoLight}`}
+                      draggable={false}
+                    />
+                    {link.logoDark && (
+                      <img
+                        src={link.logoDark}
+                        alt=""
+                        className={`${styles.productLogo} ${styles.productLogoDark}`}
+                        draggable={false}
+                      />
+                    )}
+                    <span className={styles.productRing} aria-hidden="true" />
+                  </span>
+                  <span className={styles.productLabel}>{link.label}</span>
+                </a>
+              ) : (
+                <Link to={link.href} className={styles.productItem}>
+                  <span className={styles.productLogoWrap}>
+                    <img
+                      src={link.logo}
+                      alt=""
+                      className={`${styles.productLogo} ${styles.productLogoLight}`}
+                      draggable={false}
+                    />
+                    {link.logoDark && (
+                      <img
+                        src={link.logoDark}
+                        alt=""
+                        className={`${styles.productLogo} ${styles.productLogoDark}`}
+                        draggable={false}
+                      />
+                    )}
+                    <span className={styles.productRing} aria-hidden="true" />
+                  </span>
+                  <span className={styles.productLabel}>{link.label}</span>
+                </Link>
+              )
             ) : link.external ? (
               <a
                 href={link.href}
