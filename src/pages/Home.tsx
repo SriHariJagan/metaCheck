@@ -3,7 +3,6 @@ import { StatsSection } from "@/components/sections/home/StatsSection";
 import { ProblemSection } from "@/components/sections/home/ProblemSection";
 import { ProductIntro } from "@/components/sections/home/ProductIntro";
 import { EcosystemSection } from "@/components/sections/home/EcosystemSection";
-import { SolutionsGrid } from "@/components/sections/home/SolutionsGrid";
 import { HowItWorks } from "@/components/sections/home/HowItWorks";
 import { SecuritySection } from "@/components/sections/home/SecuritySection";
 import { UseCases } from "@/components/sections/home/UseCases";
