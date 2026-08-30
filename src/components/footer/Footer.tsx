@@ -39,13 +39,14 @@ interface BrandIconProps {
   size?: number;
 }
 
-const svgProps = (size: number) => ({
-  width: size,
-  height: size,
-  viewBox: "0 0 24 24",
-  fill: "currentColor",
-  "aria-hidden": true,
-} as const);
+const svgProps = (size: number) =>
+  ({
+    width: size,
+    height: size,
+    viewBox: "0 0 24 24",
+    fill: "currentColor",
+    "aria-hidden": true,
+  }) as const;
 
 function LinkedInIcon({ size = 16 }: BrandIconProps): ReactElement {
   return (
@@ -95,14 +96,24 @@ type BrandIcon = (props: BrandIconProps) => ReactElement;
 
 type SocialAccent = "linkedin" | "x" | "youtube" | "facebook" | "instagram";
 
-const SOCIAL_LINKS: { icon: BrandIcon; label: string; href: string; accent: SocialAccent }[] = [
+const SOCIAL_LINKS: {
+  icon: BrandIcon;
+  label: string;
+  href: string;
+  accent: SocialAccent;
+}[] = [
   {
     icon: LinkedInIcon,
     label: "LinkedIn",
     href: "https://www.linkedin.com/company/metadev-innovations-privated-limited/",
     accent: "linkedin",
   },
-  { icon: XIcon, label: "X / Twitter", href: "https://x.com/metadev_pvt_ltd", accent: "x" },
+  {
+    icon: XIcon,
+    label: "X / Twitter",
+    href: "https://x.com/metadev_pvt_ltd",
+    accent: "x",
+  },
   {
     icon: YouTubeIcon,
     label: "YouTube",
@@ -139,38 +150,92 @@ interface FooterSection {
 
 const FOOTER_SECTIONS: FooterSection[] = [
   {
-    heading: "Products",
+    heading: "OUR Products",
     links: [
-      { label: "MetaHealth", href: "https://metahealth.metadev.io", external: true, logo: metaHealth, logoDark: metaHealth },
-      { label: "MetaEdu", href: "https://metaedu.metadev.io", external: true, logo: metaEdu, logoDark: metaEduDark },
-      { label: "MetaGreen", href: "https://metagreen.metadev.io", external: true, logo: metaGreen, logoDark: metaGreenDark },
-      { label: "MetaFlow", href: "https://metaflow.metadev.io", external: true, logo: metaFlow, logoDark: metaFlow },
-      { label: "MetaHire", href: "https://metahire.metadev.io", external: true, logo: metaHire, logoDark: metaHireDark },
-      { label: "MetaCheck", href: "/", external: false, logo: metaCheck, logoDark: metaCheckDark },
-      { label: "MetaNav", href: "https://metanav.metadev.io", external: true, logo: metaNav, logoDark: metaNav },
-      { label: "MetaLedger", href: "https://metaledger.metadev.io", external: true, logo: metaLedger, logoDark: metaLedgerDark },
-      { label: "MetaCard", href: "https://metacard.metadev.io", external: true, logo: metaCard, logoDark: metaCardDark },
-      { label: "MetaIM", href: "https://metaim.metadev.io", external: true, logo: metaIm, logoDark: metaImDark },
-      { label: "MetaAdds", href: "https://metaadds.metadev.io", external: true, logo: metaAds, logoDark: metaAdsDark },
-    ],
-  },
-  {
-    heading: "Solutions",
-    links: [
-      { label: "Identity Verification", href: "/solutions#identity" },
-      { label: "Background Verification", href: "/solutions#background" },
-      { label: "Document Verification", href: "/solutions#documents" },
-      { label: "Credential Verification", href: "/solutions#credentials" },
-      { label: "Compliance Checks", href: "/solutions#compliance" },
-      { label: "Business Verification", href: "/solutions#business" },
-    ],
-  },
-  {
-    heading: "Company",
-    links: [
-      { label: "About Us", href: "/about" },
-      { label: "Careers", href: "/careers" },
-      { label: "Contact Us", href: "/contact" },
+      {
+        label: "MetaHealth",
+        href: "https://metahealth.live",
+        external: true,
+        logo: metaHealth,
+        logoDark: metaHealth,
+      },
+      {
+        label: "MetaEdu",
+        href: "https://metaedu.in",
+        external: true,
+        logo: metaEdu,
+        logoDark: metaEduDark,
+      },
+      {
+        label: "MetaGreen",
+        href: "https://metagreen.in",
+        external: true,
+        logo: metaGreen,
+        logoDark: metaGreenDark,
+      },
+      {
+        label: "MetaFlow",
+        href: "https://metaflow.in",
+        external: true,
+        logo: metaFlow,
+        logoDark: metaFlow,
+      },
+      {
+        label: "MetaHire",
+        href: "https://metahire.in",
+        external: true,
+        logo: metaHire,
+        logoDark: metaHireDark,
+      },
+      {
+        label: "MetaCheck",
+        href: "/",
+        external: false,
+        logo: metaCheck,
+        logoDark: metaCheckDark,
+      },
+      {
+        label: "MetaAds",
+        href: "https://metaads.in",
+        external: true,
+        logo: metaAds,
+        logoDark: metaAdsDark,
+      },
+      {
+        label: "MetaNav",
+        href: "https://metanav.in",
+        external: true,
+        logo: metaNav,
+        logoDark: metaNav,
+      },
+      {
+        label: "MetaLedger",
+        href: "https://metaledger.in",
+        external: true,
+        logo: metaLedger,
+        logoDark: metaLedgerDark,
+      },
+      {
+        label: "MetaCard",
+        href: "https://metacard.in",
+        external: true,
+        logo: metaCard,
+        logoDark: metaCardDark,
+      },
+      {
+        label: "MetaIM",
+        href: "https://metaledger.in",
+        external: true,
+        logo: metaIm,
+        logoDark: metaImDark,
+      },
+      {
+        label: "MetaPE",
+        href: "https://metape.in",
+        external: true,
+        logo: metaCard,
+        logoDark: metaCardDark,
+      },
     ],
   },
 ];
@@ -178,14 +243,26 @@ const FOOTER_SECTIONS: FooterSection[] = [
 const LEGAL_LINKS = [
   { label: "Privacy Policy", href: "/legal/privacy-policy" },
   { label: "Terms of Service", href: "/legal/terms-of-service" },
+  { label: "Cancellation & Refunds", href: "/legal/cancellation" },
   { label: "Security", href: "/legal/security" },
   { label: "Compliance", href: "/legal/compliance" },
   { label: "Sitemap", href: "/sitemap" },
 ];
 
-type BadgeAccent = "iso" | "soc2" | "hipaa" | "gdpr" | "iso9001" | "iso42001" | "pci";
+type BadgeAccent =
+  | "iso"
+  | "soc2"
+  | "hipaa"
+  | "gdpr"
+  | "iso9001"
+  | "iso42001"
+  | "pci";
 
-const COMPLIANCE_BADGES: { icon: LucideIcon; label: string; accent: BadgeAccent }[] = [
+const COMPLIANCE_BADGES: {
+  icon: LucideIcon;
+  label: string;
+  accent: BadgeAccent;
+}[] = [
   { icon: ShieldCheck, label: "ISO 27001", accent: "iso" },
   { icon: ShieldCheck, label: "ISO 9001", accent: "iso9001" },
   { icon: ShieldCheck, label: "ISO 42001", accent: "iso42001" },
@@ -203,7 +280,10 @@ function FooterLinkSection({ section }: { section: FooterSection }) {
         {section.links.map((link) => (
           <li key={link.label}>
             {link.disabled ? (
-              <span className={cn(styles.link, styles.linkDisabled)} title="Coming soon">
+              <span
+                className={cn(styles.link, styles.linkDisabled)}
+                title="Coming soon"
+              >
                 {link.label}
                 <span className={styles.soonDot} aria-hidden="true" />
               </span>
@@ -308,9 +388,9 @@ export function Footer() {
                 </span>
               </Link>
               <p className={styles.tagline}>
-                Building a more trusted digital future. MetaCheck creates technology
-                solutions that make people, organizations, and communities more secure,
-                transparent, and connected.
+                Building a more trusted digital future. MetaCheck creates
+                technology solutions that make people, organizations, and
+                communities more secure, transparent, and connected.
               </p>
               <ul className={styles.socialList}>
                 {SOCIAL_LINKS.map(({ icon: Icon, label, href, accent }) => (
@@ -334,7 +414,9 @@ export function Footer() {
 
       <div className={styles.bottom}>
         <div className={styles.bottomInner}>
-          <p className={styles.copyright}>© {year} MetaCheck Foundation. All rights reserved.</p>
+          <p className={styles.copyright}>
+            © {year} MetaCheck Foundation. All rights reserved.
+          </p>
 
           <ul className={styles.legalList}>
             {LEGAL_LINKS.map((link) => (
@@ -348,7 +430,10 @@ export function Footer() {
 
           <ul className={styles.badgeList}>
             {COMPLIANCE_BADGES.map(({ icon: Icon, label, accent }) => (
-              <li key={label} className={`${styles.badge} ${styles[`badge-${accent}`]}`}>
+              <li
+                key={label}
+                className={`${styles.badge} ${styles[`badge-${accent}`]}`}
+              >
                 <Icon size={14} aria-hidden="true" />
                 <span>{label}</span>
               </li>

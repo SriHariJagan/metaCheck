@@ -56,7 +56,7 @@ const channels = [
     gradient: "from-cyan-500 to-blue-500",
     bg: "bg-cyan-50",
     text: "text-cyan-600",
-    value: "support@metacheck.metadev.io",
+    value: "support@metadev.in",
   },
   {
     icon: Handshake,
@@ -65,7 +65,7 @@ const channels = [
     gradient: "from-violet-500 to-purple-500",
     bg: "bg-violet-50",
     text: "text-violet-600",
-    value: "partners@metacheck.metadev.io",
+    value: "partners@metadev.in",
   },
   {
     icon: UserPlus,
@@ -74,7 +74,7 @@ const channels = [
     gradient: "from-pink-500 to-rose-500",
     bg: "bg-pink-50",
     text: "text-pink-600",
-    value: "careers@metacheck.metadev.io",
+    value: "careers@metadev.in",
   },
   {
     icon: Phone,
@@ -91,8 +91,6 @@ const METADEV_CONTACT_EMAILS = [
   "info@metadev.in",
   "contact@metadev.in",
   "support@metadev.in",
-  "business@metadev.in",
-  "tech@metadev.in",
   "partnership@metadev.in",
 ];
 
@@ -213,18 +211,38 @@ function ContactHero() {
 
                 <div className="mt-8 grid grid-cols-2 gap-4">
                   {[
-                    { label: "Demo requests", value: "< 4 hrs", gradient: "from-blue-500 to-indigo-500" },
-                    { label: "Pricing", value: "< 8 hrs", gradient: "from-cyan-500 to-teal-500" },
-                    { label: "Enterprise", value: "< 24 hrs", gradient: "from-violet-500 to-purple-500" },
-                    { label: "Support", value: "< 1 hr", gradient: "from-pink-500 to-rose-500" },
+                    {
+                      label: "Demo requests",
+                      value: "< 4 hrs",
+                      gradient: "from-blue-500 to-indigo-500",
+                    },
+                    {
+                      label: "Pricing",
+                      value: "< 8 hrs",
+                      gradient: "from-cyan-500 to-teal-500",
+                    },
+                    {
+                      label: "Enterprise",
+                      value: "< 24 hrs",
+                      gradient: "from-violet-500 to-purple-500",
+                    },
+                    {
+                      label: "Support",
+                      value: "< 1 hr",
+                      gradient: "from-pink-500 to-rose-500",
+                    },
                   ].map((item) => (
                     <div
                       key={item.label}
                       className="rounded-xl border border-white/10 bg-white/[0.03] p-4"
                     >
-                      <div className={`h-1 w-8 rounded-full bg-gradient-to-r ${item.gradient} mb-3`} />
+                      <div
+                        className={`h-1 w-8 rounded-full bg-gradient-to-r ${item.gradient} mb-3`}
+                      />
                       <p className="text-xs text-slate-400">{item.label}</p>
-                      <p className="mt-1 text-sm font-bold text-white">{item.value}</p>
+                      <p className="mt-1 text-sm font-bold text-white">
+                        {item.value}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -285,7 +303,9 @@ function ChannelsSection() {
                           className="text-xs font-semibold mt-2 truncate"
                           style={{ color: `var(--tw-gradient-stops)` }}
                         >
-                          <span className={`bg-gradient-to-r ${ch.gradient} bg-clip-text text-transparent`}>
+                          <span
+                            className={`bg-gradient-to-r ${ch.gradient} bg-clip-text text-transparent`}
+                          >
                             {ch.value}
                           </span>
                         </p>
@@ -576,7 +596,10 @@ function ContactFormSection() {
                     ) : (
                       <>
                         Send message
-                        <ArrowRight className="h-4 w-4 ml-2" aria-hidden="true" />
+                        <ArrowRight
+                          className="h-4 w-4 ml-2"
+                          aria-hidden="true"
+                        />
                       </>
                     )}
                   </Button>
@@ -598,7 +621,6 @@ function ContactFormSection() {
     </section>
   );
 }
-
 
 export default function Contact() {
   return (

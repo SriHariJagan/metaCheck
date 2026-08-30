@@ -1,20 +1,37 @@
 import type { ContactPayload, SubmitResult } from '@/types'
 
-/**
- * Contact service boundary (frontend-only for now).
- *
- * Swap `MockContactService` for a real implementation when a backend is
- * available — the contact page will not need to change.
- */
 export interface ContactService {
   submit(payload: ContactPayload): Promise<SubmitResult>
 }
 
-class MockContactService implements ContactService {
-  submit(payload: ContactPayload): Promise<SubmitResult> {
-    void payload
-    return new Promise((resolve) => setTimeout(() => resolve({ ok: true }), 1200))
+class ApiContactService implements ContactService {
+  async submit(payload: ContactPayload): Promise<SubmitResult> {
+    try {
+      const body = {
+        name: payload.name,
+        email: payload.email,
+        phone: payload.phone,
+        subject: payload.subject,
+        message: payload.message,
+        product: 'metacheck',
+      }
+
+      const res = await fetch('/api/v1/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null)
+        return { ok: false, error: data?.message || `Request failed (${res.status})` }
+      }
+
+      return { ok: true }
+    } catch (err) {
+      return { ok: false, error: err instanceof Error ? err.message : 'Network error' }
+    }
   }
 }
 
-export const contactService: ContactService = new MockContactService()
+export const contactService: ContactService = new ApiContactService()
