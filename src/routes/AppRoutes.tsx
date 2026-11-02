@@ -1,3 +1,5 @@
+import { usePageTracking } from '@/seo/usePageTracking';
+import { SEO } from '@/seo/SEO';
 import { Route, Routes } from 'react-router-dom'
 import { MainLayout } from '@/layouts/MainLayout'
 import Home from '@/pages/Home'
@@ -13,9 +15,12 @@ import { Security } from '@/pages/legal/Security'
 import { Compliance } from '@/pages/legal/Compliance'
 import { Sitemap } from '@/pages/legal/Sitemap'
 
-export function AppRoutes() {
+export function AppRoutes(){
+  usePageTracking();
   return (
-    <Routes>
+    <>
+      <SEO />
+      <Routes>
       <Route element={<MainLayout />}>
         <Route index element={<Home />} />
         <Route path="about" element={<About />} />
@@ -35,5 +40,6 @@ export function AppRoutes() {
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
+    </>
   )
 }

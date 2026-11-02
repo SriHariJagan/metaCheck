@@ -1,3 +1,4 @@
+import { SEO } from '@/seo/SEO';
 import { ShieldCheck, Info, Lock } from "lucide-react"
 import { LegalLayout, type TocItem } from "@/components/legal/LegalLayout"
 
@@ -27,6 +28,7 @@ export function PrivacyPolicy() {
       updatedAt="28 August 2026"
       toc={TOC}
     >
+      <SEO />
       <div className="mb-6 flex gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-meta-blue/10 text-meta-blue"><Info size={18} /></span>
         <div>

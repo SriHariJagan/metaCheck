@@ -1,3 +1,4 @@
+import { SEO } from '@/seo/SEO';
 import { useState } from 'react'
 import { ArrowRight, MapPin, Clock, Briefcase, ChevronRight, Heart, TrendingUp, Lightbulb, Target } from 'lucide-react'
 import { Container } from '@/components/common/Container'
@@ -39,6 +40,7 @@ export default function Careers() {
 
   return (
     <>
+      <SEO />
       {/* Hero */}
       <section className="relative overflow-hidden bg-[#0a0a1a] pt-28 sm:pt-32 lg:pt-40 pb-16 sm:pb-20 lg:pb-24">
         <div className="pointer-events-none absolute inset-0" aria-hidden="true">

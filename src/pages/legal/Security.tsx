@@ -1,3 +1,4 @@
+import { SEO } from '@/seo/SEO';
 import { ShieldCheck, Lock, Eye, Bug, KeyRound, Server } from "lucide-react"
 import { LegalLayout, type TocItem } from "@/components/legal/LegalLayout"
 
@@ -23,6 +24,7 @@ export function Security() {
       updatedAt="28 August 2026"
       toc={TOC}
     >
+      <SEO />
       <div className="mb-6 flex flex-wrap gap-2">
         <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-meta-navy"><Server size={12} /> TLS 1.2+ everywhere</span>
         <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-meta-navy"><Lock size={12} /> AES-256 at rest</span>

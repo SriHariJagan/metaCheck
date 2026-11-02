@@ -1,3 +1,4 @@
+import { SEO } from '@/seo/SEO';
 import { Compass, Rocket, Code2, Globe2, ArrowRight, Eye, Scale, Gauge, Lock, Heart, UserCheck, Target, Users, Shield, Sparkles } from 'lucide-react'
 import { Container } from '@/components/common/Container'
 import { SectionHeading } from '@/components/common/SectionHeading'
@@ -205,6 +206,7 @@ export default function About() {
 
   return (
     <>
+      <SEO />
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-primary-50/30 pt-4 lg:pt-6">
         {/* Background decorations */}

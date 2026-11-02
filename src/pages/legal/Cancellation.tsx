@@ -1,3 +1,4 @@
+import { SEO } from '@/seo/SEO';
 import { RefreshCcw, Info, AlertTriangle, Receipt, Clock, ShieldCheck } from "lucide-react"
 import { LegalLayout, type TocItem } from "@/components/legal/LegalLayout"
 
@@ -24,6 +25,7 @@ export function Cancellation() {
       updatedAt="28 August 2026"
       toc={TOC}
     >
+      <SEO />
       <div className="mb-6 flex gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-meta-blue/10 text-meta-blue"><Info size={18} /></span>
         <div>
@@ -133,7 +135,7 @@ export function Cancellation() {
       <ol>
         <li><strong>From your account (fastest):</strong> Billing owner → Dashboard → Billing → “Cancel / Manage plan”. For refunds, use “Report a billing issue” on the same page.</li>
         <li><strong>By email:</strong> <a href="mailto:support@metadev.in">support@metadev.in</a> with subject <code>Cancellation — [Product] — [Org]</code> or <code>Refund — [Invoice ID]</code>. Include org/workspace name, product, invoice/transaction ID, and reason.</li>
-        <li><strong>Business / enterprise:</strong> Also CC <a href="mailto:business@metadev.in">business@metadev.in</a> or your account manager for faster routing.</li>
+        <li><strong>Partnership / enterprise:</strong> Also CC <a href="mailto:partnership@metacheck.in">partnership@metacheck.in</a> or your account manager for faster routing.</li>
         <li><strong>Acknowledgement:</strong> We acknowledge within <strong>1 business day</strong> and give a decision within <strong>5 business days</strong> (sooner for duplicate-charge cases).</li>
       </ol>
       <p>We may ask for verification (e.g., confirmation from the billing email) to prevent unauthorised cancellations. Once approved, refunds are processed in <strong>7–10 business days</strong>; your bank may take an additional 3–7 days to post.</p>
@@ -149,7 +151,7 @@ export function Cancellation() {
 
       <h2 id="changes">10. Changes & contact</h2>
       <p>We may update this Policy to reflect changes in products, pricing, or law. Material changes are posted here with a new “Last updated” date; for paid customers we also provide email notice at least <strong>15 days</strong> before they take effect. Continued use after the effective date constitutes acceptance; if you disagree, cancel before renewal.</p>
-      <p><strong>Support & billing:</strong> <a href="mailto:support@metadev.in">support@metadev.in</a> · <strong>Business:</strong> <a href="mailto:business@metadev.in">business@metadev.in</a> · <strong>Grievance / Privacy:</strong> <a href="mailto:contact@metadev.in">contact@metadev.in</a> · <strong>General:</strong> <a href="mailto:info@metadev.in">info@metadev.in</a> · Phone: +91 95595 59143</p>
+      <p><strong>Support & billing:</strong> <a href="mailto:support@metadev.in">support@metadev.in</a> · <strong>Partnership:</strong> <a href="mailto:partnership@metacheck.in">partnership@metacheck.in</a> · <strong>Grievance / Privacy:</strong> <a href="mailto:contact@metadev.in">contact@metadev.in</a> · <strong>General:</strong> <a href="mailto:info@metadev.in">info@metadev.in</a> · Phone: +91 95595 59143</p>
       <p><strong>Postal:</strong> MetaDev Innovations Pvt. Ltd., Hyderabad, Telangana, India.</p>
       <p className="text-xs text-slate-500">Disputes are governed by the laws of India with exclusive jurisdiction of courts at Hyderabad, Telangana, per our Terms — we encourage good-faith resolution first. This Policy does not create rights beyond applicable law; product DPAs and signed order forms prevail in case of conflict.</p>
     </LegalLayout>

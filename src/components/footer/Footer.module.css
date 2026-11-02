@@ -398,6 +398,7 @@
 /* ---------- Section 2: brand block ---------- */
 
 .footerBrandRow {
+  padding-left: 1.5rem; /* seo left pad */
   display: flex;
   justify-content: flex-start;
   padding-inline: 0.5rem;
@@ -658,6 +659,7 @@
 }
 
 .bottomInner {
+  padding-left: 1.5rem; /* seo left pad */
   max-width: 88rem;
   margin-inline: auto;
   padding-block: var(--space-6);

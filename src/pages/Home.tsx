@@ -1,3 +1,4 @@
+import { SEO } from '@/seo/SEO';
 import { Hero } from "@/components/sections/home/Hero";
 import { StatsSection } from "@/components/sections/home/StatsSection";
 import { ProblemSection } from "@/components/sections/home/ProblemSection";
@@ -19,6 +20,7 @@ export default function Home() {
 
   return (
     <>
+      <SEO />
       <Hero />
       <StatsSection />
       <ProblemSection />

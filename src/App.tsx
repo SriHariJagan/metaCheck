@@ -1,5 +1,13 @@
 import { AppRoutes } from '@/routes/AppRoutes'
+import { SEO } from '@/seo/SEO'
+import { usePageTracking } from '@/seo/usePageTracking'
 
 export default function App() {
-  return <AppRoutes />
+  usePageTracking()
+  return (
+    <>
+      <SEO />
+      <AppRoutes />
+    </>
+  )
 }
