@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { Navbar } from '@/components/navbar/Navbar'
 import { Footer } from '@/components/footer/Footer'
+import { PageScrollbar } from '@/components/common/PageScrollbar'
 
 export function MainLayout() {
   const { pathname } = useLocation()
@@ -23,6 +24,7 @@ export function MainLayout() {
         <Outlet />
       </main>
       <Footer />
+      <PageScrollbar />
     </div>
   )
 }

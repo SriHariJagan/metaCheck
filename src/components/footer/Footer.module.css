@@ -159,8 +159,8 @@
 .watermark {
   position: absolute;
   z-index: 0;
-  right: -1%;
-  bottom: -4%;
+  right: clamp(1.5rem, 4vw, 4rem);
+  bottom: 0;
   font-size: clamp(7rem, 16vw, 13rem);
   font-weight: var(--font-weight-bold);
   letter-spacing: -0.03em;

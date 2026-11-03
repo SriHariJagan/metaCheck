@@ -27,7 +27,7 @@ export function Hero() {
       </div>
 
       <Container className="relative flex min-h-[90vh] items-center">
-        <div className="grid w-full items-center gap-12 py-20 lg:grid-cols-2 lg:gap-16">
+        <div className="grid w-full items-center gap-12 pb-20 pt-28 sm:pt-32 lg:grid-cols-2 lg:gap-16 lg:pb-24 lg:pt-36">
           {/* Left content */}
           <Reveal variant="left" className="max-w-2xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur-sm">
